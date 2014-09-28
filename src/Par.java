@@ -6,19 +6,19 @@ public class Par implements java.io.Serializable{
   private int[] coord;
   
   public String toString(){
-    return "x:" + coord[0] + ", y:" + coord[1];
+		return "x:" + coord[0] + ", y:" + coord[1];
   }
   
   public Par(int x, int y){
-      coord = new int[]{x, y};
+		coord = new int[]{x, y};
   }
   
   public int getX(){
-    return coord[0];
+		return coord[0];
   }
   
   public int getY(){
-	return coord[1];
+		return coord[1];
   }
 
 }

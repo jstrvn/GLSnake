@@ -8,7 +8,7 @@ import com.jogamp.opengl.util.*;
 import com.jogamp.opengl.util.gl2.*;
 
 
-public class TableroGL extends GLCanvas implements AbstractTablero, GLEventListener, KeyListener{
+public class TableroGL extends GLCanvas implements AbstractTablero, GLEventListener, KeyListener, FocusListener{
    private JLabel puntuacion;
    private JDialog dia;
    public static int col, fil;
@@ -24,30 +24,38 @@ public class TableroGL extends GLCanvas implements AbstractTablero, GLEventListe
    private long fin;
    public long tiempo;
    public void setEstado(String estado){
-      if ( serp!= null )
-		serp.estado = estado;
+		if ( serp != null ){
+			serp.estado = estado;
+		}
    }
-   
+   public String getEstado(){
+	   return serp.estado;
+   }
    
    public void setGame(SGSnake snake){
-     serp = new Serpiente(this, snake.serpiente);
-	 raton = new Alimento(this, snake.alimento.get(0));
-	 tiempo = snake.tiempo;
-   }
+		serp = new Serpiente(this, snake.serpiente);
+		serp.setDireccion(snake.direccion);
+		raton = new Alimento(this, snake.alimento.get(0));
+		tiempo = snake.tiempo;
+		inicio = System.currentTimeMillis();
+		puntuacion.setText( "Estado: " + serp.estado + space(8) + " Puntuacion: " + String.valueOf(serp.size - 3) + space(8) + " Tiempo: " + String.valueOf(tiempo + (System.currentTimeMillis()-inicio)/1000));
+	}
    
    public SGSnake getGame(){
-       return new SGSnake(this);
+		tiempo += (System.currentTimeMillis()-inicio)/1000;
+		inicio = System.currentTimeMillis();
+		return new SGSnake(this);
    }
    
     public int	getFil(){
-	   return fil;
+		return fil;
 	}
 	public  Alimento getRaton(){
-	   return raton;
+		return raton;
 	}
 	
 	public  double getRatioX(){
-	   return ratioX;
+		return ratioX;
 	}
     public  double getRatioY(){
 		return ratioY;
@@ -74,58 +82,60 @@ public class TableroGL extends GLCanvas implements AbstractTablero, GLEventListe
    
    public TableroGL(GLCapabilities cap, int width, int height, int col, int fil, JLabel label){
      
-	   super(cap);
-	   tiempo = 0L;
-	   puntuacion = label;
-	   inicio = System.currentTimeMillis();
-	   fps = 1;
-	   setPreferredSize(new Dimension(width, height));
-	   addGLEventListener(this);
-	   addKeyListener(this); 
-	   this.width = width;
-	   this.height = height;
-	   int x = ((int)(Math.random()*col));
-	   int y = ((int)(Math.random()*fil));
-     
-	   serp = new Serpiente(this, new Par(x,y));
-	   raton = new Alimento(this, getPosicionAlimento());
-	   ratioX = (double)(width)/col;
-	   ratioY = (double)(height)/fil;
-	   this.col = col;
-	   this.fil = fil;
-	   puntuacion.setText( "Estado: " + serp.estado + " Puntuacion: " + String.valueOf(serp.size - 3) + " Tiempo: " + String.valueOf(tiempo + (System.currentTimeMillis()-inicio)/1000));
-	   animator = new FPSAnimator(this, fps);
-	   animator.start();
+		   super(cap);
+		   tiempo = 0L;
+		   puntuacion = label;
+		   inicio = System.currentTimeMillis();
+		   fps = 1;
+		   setPreferredSize(new Dimension(width, height));
+		   addGLEventListener(this);
+		   addKeyListener(this); 
+		   this.width = width;
+		   this.height = height;
+		   int x = ((int)(Math.random()*col));
+		   int y = ((int)(Math.random()*fil));
+		   addFocusListener(this);
+		   serp = new Serpiente(this, new Par(x,y));
+		   raton = new Alimento(this, getPosicionAlimento());
+		   ratioX = (double)(width)/col;
+		   ratioY = (double)(height)/fil;
+		   this.col = col;
+		   this.fil = fil;
+		   puntuacion.setText( "Estado: " + serp.estado + space(8) + " Puntuacion: " + String.valueOf(serp.size - 3) + space(8) + " Tiempo: " + String.valueOf(tiempo + (System.currentTimeMillis()-inicio)/1000));
+		   animator = new FPSAnimator(this, fps);
+		   animator.start();
 	}
    
    
-public void display(GLAutoDrawable drawable) {                
-	GL2 gl = drawable.getGL().getGL2();
-	gl.glClear(GL2.GL_COLOR_BUFFER_BIT);  
-    gl.glColor3f(0f, 0f, 0f);
-    paint(gl);  
-	 
-	gl.glFlush();	
-}
+	public void display(GLAutoDrawable drawable) {                
+		GL2 gl = drawable.getGL().getGL2();
+		gl.glClear(GL2.GL_COLOR_BUFFER_BIT);  
+		gl.glColor3f(0f, 0f, 0f);
+		paint(gl);  
+		 
+		gl.glFlush();	
+	}
 
-public void dispose(GLAutoDrawable drawable) {
-}
+	public void dispose(GLAutoDrawable drawable) {
+	}
 
-public void init(GLAutoDrawable drawable) {
+	public void init(GLAutoDrawable drawable) {
 
-	GL2 gl = drawable.getGL().getGL2();
-	 
-	gl.glClearColor(1.0f, 1.0f, 1.0f, 0.0f); 
-	gl.glMatrixMode(GL2.GL_PROJECTION);    
-	gl.glLoadIdentity();                 
-	glu.gluOrtho2D( -20, 900, -20, 800);   
-	gl.glMatrixMode(GL2.GL_MODELVIEW);       
-	gl.glLoadIdentity();    
-	reiniciar();  
-}
+		GL2 gl = drawable.getGL().getGL2();
 
-public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
-}
+		gl.glClearColor(1.0f, 1.0f, 1.0f, 0.0f); 
+		gl.glMatrixMode(GL2.GL_PROJECTION);    
+		gl.glLoadIdentity();                 
+		glu.gluOrtho2D( -20, 900, -20, 620);   
+		gl.glMatrixMode(GL2.GL_MODELVIEW);       
+		gl.glLoadIdentity();    
+		
+		
+		reiniciar();  
+	}
+
+	public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
+	}
 
        public  void paint(GL2 gl){
       
@@ -148,12 +158,13 @@ public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
 			  if ( dia == null ){
 	            dia = new JDialog( new JFrame() ,"Has perdido");
 				dia.setLayout( new BorderLayout() );
-				
-				JTextArea but = new JTextArea("Puntuacion: " + serp.size );
+				serp.estado = "Pausa";
+				dia.setResizable(false);
+				JTextArea but = new JTextArea("Puntuacion: " + String.valueOf(serp.size -3) );
 				but.setEditable(false);
 				dia.add( but, BorderLayout.NORTH);
 				
-				dia.pack();
+				dia.setSize(250, 70);
 				dia.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 				dia.setFocusableWindowState(true);
 				dia.addWindowListener(new WindowAdapter(){
@@ -173,7 +184,12 @@ public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
 			
 		}
 		else{
-			puntuacion.setText( "Estado: " + serp.estado + " Puntuacion: " + String.valueOf(serp.size - 3) +   space(8) +  " Tiempo: "  +  String.valueOf(tiempo +(System.currentTimeMillis()-inicio)/1000) );
+		   if ( !serp.estado.equalsIgnoreCase("PAUSA") ){
+				puntuacion.setText( "Estado: " + serp.estado + space(8) + " Puntuacion: " + String.valueOf(serp.size - 3) +   space(8) +  " Tiempo: "  +  String.valueOf(tiempo +(System.currentTimeMillis()-inicio)/1000) );
+			}
+			else{
+					puntuacion.setText( "Estado: " + serp.estado );
+			}
 		}
 		serp.dibujar(gl);
 		
@@ -220,33 +236,6 @@ public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
 		return new Par(x, y);
 	}
 	
-/*	
-	public JLabel obtenerLPuntuacion(){
-	  JLabel l = null;
-	  int i=0;
-	  try{
-	        Component c = this;
-			//while( true ){
-		    JOptionPane.showMessageDialog(null, SwingUtilities.getWindowAncestor(this));
-		//	frame.setTitle("HOLA");
-				//if (  ( (JFrame)getParent() ).getContentPane().getComponent(i) instanceof JLabel ){
-			//		l = ((JLabel)( (JFrame)getParent() ).getContentPane().getComponent(i));
-				//	break;
-				//}
-				//JOptionPane.showMessageDialog(null, ( ( (JFrame)getParent() )) );
-			//	i++;
-		//	}
-		}
-		catch(Exception e){
-		     
-			JOptionPane.showMessageDialog(null,  e);
-		}
-		
-		finally{
-			return l;
-		}
-	}
-*/	
    public void keyPressed(KeyEvent e){
      switch( e.getKeyCode() ){
 	    case KeyEvent.VK_UP:
@@ -272,11 +261,12 @@ public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
 		
 		case KeyEvent.VK_P:
 		if ( !serp.estado.equalsIgnoreCase("PAUSA")){
-			serp.estado ="pausa";
+			serp.estado ="Pausa";
 			tiempo += (System.currentTimeMillis() - inicio)/1000;
 		}
 		else{
-		    serp.estado = "on";
+		    serp.estado = "Juego";
+			inicio = System.currentTimeMillis();
 		}
 		break;
 	 }
@@ -289,6 +279,12 @@ public void reshape(GLAutoDrawable drawable, int x, int y, int w, int h) {
    public void	keyTyped(KeyEvent e){
    
    }
-
+	public void focusGained(FocusEvent e){
+	  // JOptionPane.showMessageDialog(null, e.getOppositeComponent().toString() ); 
+	//   serp.estado = "Juego";
+	}
+	public void focusLost(FocusEvent e){
+	    serp.estado = "Pausa";
+	}
 
 }

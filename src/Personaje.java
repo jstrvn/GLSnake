@@ -9,22 +9,20 @@ public class Personaje{
 	public Cola<Par> cuerpo;
 	protected AbstractTablero tab;
   
-	
-	
-  public String toString(){
-    StringBuffer buf = new StringBuffer();
-	for(int i=0; i<cuerpo.size(); i++){
-	    buf.append( i +"::: " + "X:" + cuerpo.get(i).getX()  + " Y:" + cuerpo.get(i).getY() + "\n");
+	public String toString(){
+		StringBuffer buf = new StringBuffer();
+		for(int i=0; i<cuerpo.size(); i++){
+			buf.append( i +"::: " + "X:" + cuerpo.get(i).getX()  + " Y:" + cuerpo.get(i).getY() + "\n");
+		}
+		return buf.toString();
 	}
-	return buf.toString();
-  }
   
-  public Personaje(AbstractTablero tab, Cola<Par> par){
-     this.tab = tab;
-	 cuerpo = par;
-  }
+	public Personaje(AbstractTablero tab, Cola<Par> par){
+		 this.tab = tab;
+		 cuerpo = par;
+	}
   
-   public Personaje(AbstractTablero tab, Par pos){
+	public Personaje(AbstractTablero tab, Par pos){
 		this.tab = tab;
 		cuerpo = new Cola<>();
 		cuerpo.enqueue( pos );
@@ -40,14 +38,12 @@ public class Personaje{
 	
 	}
 	
-  public void dibujar(Graphics g){
-	int n = cuerpo.size();
-	
-	for(int i=0; i<n; i++){
-		  g.fillRect( (int)(cuerpo.get(i).getX()*tab.getRatioX()), (int)(cuerpo.get(i).getY()*tab.getRatioY()), (int)tab.getRatioX(), (int)tab.getRatioY());
-        }
+	public void dibujar(Graphics g){
+		int n = cuerpo.size();
+		
+		for(int i=0; i<n; i++){
+			 g.fillRect( (int)(cuerpo.get(i).getX()*tab.getRatioX()), (int)(cuerpo.get(i).getY()*tab.getRatioY()), (int)tab.getRatioX(), (int)tab.getRatioY());
+		}
 	}
   
-  
-
 }

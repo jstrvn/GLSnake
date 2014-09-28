@@ -6,13 +6,15 @@ public class SGSnake implements Serializable{
    
    public Cola<Par> serpiente;
    public Cola<Par> alimento;
+   public Par direccion;
    public long tiempo;
    
    public SGSnake(TableroGL tab){
    
 		serpiente = tab.serp.cuerpo;
+		direccion = tab.serp.getDireccion();
 		alimento = tab.raton.cuerpo;
-		tiempo = tab.tiempo;	
+		tiempo = tab.tiempo;		
    }
    
 }

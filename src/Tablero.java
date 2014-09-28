@@ -55,9 +55,9 @@ public class Tablero extends JPanel implements KeyListener, AbstractTablero{
       this.col = col;
 	  this.fil = fil;
 	  Runnable run = new Runnable(){
-	    public void run(){
-			anima();
-		}
+			public void run(){
+				anima();
+			}
 	  };
 	  Thread thread = new Thread(run);
 	  thread.start();
@@ -65,26 +65,27 @@ public class Tablero extends JPanel implements KeyListener, AbstractTablero{
    
      
 	public void anima(){
-	 while(true){ 
-  	 try{
-	    Thread.sleep(ms);		
-		repaint();
-		if ( stop ){
-		  break;
-		}
-	  }
-	  catch(InterruptedException e){
+		while(true){ 
+			try{
+				Thread.sleep(ms);		
+				repaint();
+				if ( stop ){
+					break;
+				}
+			}
+			catch(InterruptedException e){
 		
-	  }
-	 }
+			}
+		}
 	}
    
    public void paintComponent(Graphics g){
-      super.paintComponent(g);
-      g.setColor( new Color(100, 120, 200) );
-	  for(int i=0; i<col; i++)
-	   for(int j=0; j<fil; j++){
-		g.drawRect((int)(i*ratioX), (int)(j*ratioY), (int)ratioX, (int)ratioY);
+		super.paintComponent(g);
+		g.setColor( new Color(100, 120, 200) );
+		for(int i=0; i<col; i++){
+			for(int j=0; j<fil; j++){
+				g.drawRect((int)(i*ratioX), (int)(j*ratioY), (int)ratioX, (int)ratioY);
+			}
 		}
 		g.setColor( new Color(255, 0, 0) );
 	  
@@ -94,9 +95,9 @@ public class Tablero extends JPanel implements KeyListener, AbstractTablero{
 		if ( !serp.avanzar() ){
 		  
 		  SwingUtilities.invokeLater(new Runnable(){
-	         public void run(){
-			  if ( dia.getComponent(0) == null )
-				dia.setLayout( new BorderLayout() );
+				public void run(){
+					if ( dia.getComponent(0) == null )
+						dia.setLayout( new BorderLayout() );
 				JButton but = new JButton("Puntuacion: " + serp.size);
 				dia.add( but, BorderLayout.NORTH);
 				but.addActionListener(new ActionListener(){
